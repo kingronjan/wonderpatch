@@ -7,7 +7,15 @@ wonderpatch
         :target: https://pypi.python.org/pypi/wonderpatch
 
 
-Better patch for test.
+A better patch tool for python test.
+
+
+Install
+-------
+
+.. code::
+
+    pip install wonderpatch
 
 
 Usage
