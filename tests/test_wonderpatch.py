@@ -17,15 +17,22 @@ class TestObject(object):
     def age(self):
         return 1
 
+    def move(self, step, mm=1):
+        print(f'{self} moved {step} to {mm}')
+
 
 class TestWonderpatch(unittest.TestCase):
     """Tests for `wonderpatch` package."""
 
-    def setUp(self):
-        """Set up test fixtures, if any."""
+    def test_raise_error_when_not_called(self):
+        with self.assertRaises(AssertionError):
+            with wonder(TestObject.name).called_once(return_value=0):
+                pass
 
-    def tearDown(self):
-        """Tear down test fixtures, if any."""
+    def test_raise_error_when_not_called_with(self):
+        with self.assertRaises(AssertionError):
+            with wonder(TestObject.move).called_once_with(1, mm=2):
+                TestObject().move(1)
 
     def test_patch_method(self):
         with wonder(TestObject.name).called_once(return_value=0):

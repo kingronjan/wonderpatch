@@ -2,7 +2,7 @@ import importlib
 import inspect
 import logging
 from contextlib import ContextDecorator
-from unittest.mock import ANY, MagicMock, Mock, PropertyMock, call, patch
+from unittest.mock import ANY, MagicMock, Mock, PropertyMock, call, patch as _patch
 
 _empty = object()
 
@@ -27,11 +27,11 @@ def wonder_patch(target, item, new):
         new.__name__ = raw.__name__
 
     if inspect.ismodule(target) or isinstance(target, str):
-        p = patch(path, new=new)
+        p = _patch(path, new=new)
         p.start()
 
     else:
-        p = patch.object(target, item, new=new)
+        p = _patch.object(target, item, new=new)
         p.start()
 
         if not inspect.ismethod(raw) and not inspect.isfunction(raw):
@@ -136,7 +136,8 @@ class Patch(object):
             matched_calls = [c for c in matched_calls if not c[0]]
 
         def error_message(times):
-            return 'expect %s called with %s %s times, actual: %s' % (self.path, self.call, times, len(matched_calls))
+            return (f'expect {self.path} called with {self.call} {times} times \n'
+                    f'actual {len(matched_calls)} times, actual calls: {self.mock.mock_calls}')
 
         if self.times is not None:
             assert len(matched_calls) == self.times, error_message(self.times)
@@ -302,8 +303,8 @@ class Wonder(object):
 
 class Together(ContextDecorator):
 
-    def __init__(self, wonder):
-        self.wonder = wonder
+    def __init__(self, wonder_instance):
+        self.wonder = wonder_instance
 
     def __enter__(self):
         if not self.wonder.wondering:
