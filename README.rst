@@ -116,11 +116,11 @@ the wonder api
 
   patch and set min or max times call, default is at least 1 time.
 
-- wonder(...).called_with(*args, **kwargs)
+- wonder(...).called_with(`*args, **kwargs`)
 
   patch and set called at least once with `args, kwargs`
 
-- wonder(...).called_once_with(*args, **kwargs)
+- wonder(...).called_once_with(`*args, **kwargs`)
 
   patch and set called once with `args, kwargs`
 
