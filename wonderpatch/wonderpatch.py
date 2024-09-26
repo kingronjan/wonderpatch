@@ -128,8 +128,8 @@ class Patch(object):
         if all(x is None for x in [self.times, self.min_times, self.max_times]):
             return
 
-        if not isinstance(self.mock, Mock):
-            raise ValueError('not support validate for %s' % self.mock)
+        if not hasattr(self.mock, 'mock_calls'):
+            raise ValueError('not support validate for %s which does not has attribute `mock_calls`' % self.mock)
 
         matched_calls = [c for c in self.mock.mock_calls if c == self.call]
         if self.only_self:
