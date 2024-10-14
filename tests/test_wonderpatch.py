@@ -4,6 +4,7 @@
 
 import os
 import unittest
+from unittest.mock import Mock
 
 from wonderpatch import wonder
 
@@ -81,3 +82,9 @@ class TestWonderpatch(unittest.TestCase):
         with wonder(TestObject.move), self.assertRaises(TypeError) as error:
             TestObject().move(1, 1, 2)
             assert 'too many positional arguments' in str(error)
+
+    def test_mock_mock(self):
+        m = Mock()
+
+        with wonder(m.name).called_once(return_value=1):
+            assert m.name() == 1
