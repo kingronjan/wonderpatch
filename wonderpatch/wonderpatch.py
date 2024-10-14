@@ -20,21 +20,21 @@ def wonder_patch(target, item, new, **kwargs):
     autospec = True
     new_callable = MagicMock
 
-    if new is _empty:
-        if isinstance(raw, property):
-            autospec = False
-            new_callable = PropertyMock
-    else:
-        kwargs['new'] = new
-
     if isinstance(raw, Mock):
         kwargs['new_callable'] = new_callable
 
     elif new is _empty:
+        if isinstance(raw, property):
+            autospec = False
+            new_callable = PropertyMock
+
         if 'autospec' not in kwargs and autospec:
             kwargs['autospec'] = autospec
         else:
             kwargs['new_callable'] = new_callable
+
+    else:
+        kwargs['new'] = new
 
     if inspect.ismodule(target) or isinstance(target, str):
         p = _patch(path, **kwargs)
