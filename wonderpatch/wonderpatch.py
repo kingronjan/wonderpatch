@@ -29,7 +29,8 @@ def wonder_patch(target, item, new, **kwargs):
 
     if isinstance(raw, Mock):
         kwargs['new_callable'] = new_callable
-    else:
+
+    elif new is _empty:
         if 'autospec' not in kwargs and autospec:
             kwargs['autospec'] = autospec
         else:

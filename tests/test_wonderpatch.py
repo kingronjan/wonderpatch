@@ -88,3 +88,10 @@ class TestWonderpatch(unittest.TestCase):
 
         with wonder(m.name).called_once(return_value=1):
             assert m.name() == 1
+
+    def test_specify_new(self):
+        m = Mock()
+        m.return_value = 1
+
+        with wonder(TestObject.move, new=m):
+            assert TestObject.move() == 1
