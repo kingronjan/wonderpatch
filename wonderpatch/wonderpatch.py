@@ -9,7 +9,7 @@ _empty = object()
 logger = logging.getLogger(__name__)
 
 
-def wonder_patch(target, item, new):
+def wonder_patch(target, item, new, **kwargs):
     if item is None:
         path = target
         raw = None
@@ -17,22 +17,29 @@ def wonder_patch(target, item, new):
         path = getattr(target, '__name__', str(target)) + '.' + item
         raw = getattr(target, item)
 
-    if new is _empty:
-        if isinstance(raw, property):
-            new = PropertyMock()
-        else:
-            new = MagicMock()
+    if isinstance(raw, property) and new is _empty:
+        new = PropertyMock()
+        kwargs['autospec'] = autospec = False
+    else:
+        autospec = kwargs.setdefault('autospec', True)
 
-    if hasattr(raw, '__name__'):
+    if new is _empty:
+        if not autospec:
+            new = MagicMock()
+            kwargs['new'] = new
+    else:
+        kwargs['new'] = new
+
+    if new is not _empty and hasattr(raw, '__name__'):
         new.__name__ = raw.__name__
 
     if inspect.ismodule(target) or isinstance(target, str):
-        p = _patch(path, new=new)
-        p.start()
+        p = _patch(path, **kwargs)
+        new = p.start()
 
     else:
-        p = _patch.object(target, item, new=new)
-        p.start()
+        p = _patch.object(target, item, **kwargs)
+        new = p.start()
 
         if not inspect.ismethod(raw) and not inspect.isfunction(raw):
             setattr(target, item, new)

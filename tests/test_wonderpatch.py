@@ -76,3 +76,8 @@ class TestWonderpatch(unittest.TestCase):
 
         assert TestObject().name() == TestObject.__name__
         assert TestObject().age == 1
+
+    def test_autospec_method(self):
+        with wonder(TestObject.move), self.assertRaises(TypeError) as error:
+            TestObject().move(1, 1, 2)
+            assert 'too many positional arguments' in str(error)
