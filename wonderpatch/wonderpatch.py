@@ -18,7 +18,7 @@ def wonder_patch(target, item, new, **kwargs):
         raw = getattr(target, item)
 
     autospec = True
-    new_callable = MagicMock
+    new_callable = kwargs.pop('new_callable', MagicMock)
 
     if isinstance(raw, Mock):
         kwargs['new_callable'] = new_callable
